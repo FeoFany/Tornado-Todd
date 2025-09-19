@@ -1,1 +1,13 @@
+<form method="POST">
+  {% csrf_token %}
+  <input type="text" name="title" required placeholder="Добавить задачу">
+  <button type="submit">Добавить</button>
+</form>
 
+<ul>
+  {% for task in tasks %}
+    <li>{{ task.title }}</li>
+  {% empty %}
+    <li>Задач нет</li>
+  {% endfor %}
+</ul>
