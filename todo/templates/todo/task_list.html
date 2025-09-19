@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}Мои задачи - Tornado Todd{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="text-center">Мои задачи</h2>
+            </div>
+            <div class="card-body">
+                <!-- Форма добавления новой задачи -->
+                <form method="POST" action="{% url 'add_task' %}" class="mb-4">
+                    {% csrf_token %}
+                    <div class="input-group">
+                        <input type="text" name="title" class="form-control" placeholder="Добавить новую задачу..." required>
+                        <button type="submit" class="btn btn-primary">Добавить</button>
+                    </div>
+                </form>
+
+                <!-- Список задач -->
+                <ul class="list-group">
+                    {% for task in tasks %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <form method="POST" action="{% url 'toggle_task' task.id %}" class="d-inline">
+                                {% csrf_token %}
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" onchange="this.form.submit()" {% if task.completed %}checked{% endif %}>
+                                    <span class="ms-2 {% if task.completed %}task-completed{% endif %}">{{ task.title }}</span>
+                                </div>
+                            </form>
+                        </div>
+                        <div>
+                            <small class="text-muted me-2">{{ task.created_date|date:"d.m.Y H:i" }}</small>
+                            <form method="POST" action="{% url 'delete_task' task.id %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-danger">Удалить</button>
+                            </form>
+                        </div>
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item text-center">Пока нет задач. Добавьте первую задачу!</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
